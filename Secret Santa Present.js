@@ -1,6 +1,4 @@
-map_range = (v,af,bf,at,bt) => ((v-af)/(bf-af))*(bt-at)+at
-
-function hue(c) {c%=360;var r,g,b;if(c<=60||c>=300)r=255;if(c>=60&&c<=180)g=255;if(c>=180&&c<=300)b=255;if(c>=60&&c<=120)r=map_range(c,60,120,255,0);else if(c<=300&&c>=240)r=map_range(c,240,300,0,255);if(c>=0&&c<=60)g=map_range(c,0,60,0,255);else if(c>=180&&c<=240)g=map_range(c,180,240,255,0);if(c>=120&&c<=180)b=map_range(c,120,180,0,255);else if(c>=300&&c<=360)b=map_range(c,300,360,255,0);return[r,g,b].map(Math.round)}
+function hue(c) {m=(v,af,bf,at,bt)=>((v-af)/(bf-af))*(bt-at)+at;var r,g,b;c%=360;if(c<=60||c>=300)r=255;if(c>=60&&c<=180)g=255;if(c>=180&&c<=300)b=255;if(c>=60&&c<=120)r=m(c,60,120,255,0);else if(c<=300&&c>=240)r=m(c,240,300,0,255);if(c>=0&&c<=60)g=m(c,0,60,0,255);else if(c>=180&&c<=240)g=m(c,180,240,255,0);if(c>=120&&c<=180)b=m(c,120,180,0,255);else if(c>=300&&c<=360)b=m(c,300,360,255,0);return[r,g,b].map(Math.round)}
 
 gen = (function*(){}).constructor("var t=[0,0,0,0];var p=0;"+`
 // j
