@@ -47,9 +47,13 @@ setTimeout(() => {
 		return [Math.round(red), Math.round(green), Math.round(blue)];
 	}
 	
+	function run_bf(bf) {
+		return (function*(){}).constructor("var t=Array(10).fill(0);var p=0;"+bf.replace(/[+-<>.[\]]/g, c=>"t[p]++;t[p]--;p--;p++;yield t[p];while(t[p]){;}".split(";")["+-<>.[]".indexOf(c)]+";"))()
+	}
+	
 	screen = document.createElement("canvas");
-	screen.width = 672;
-	screen.height = 224;
+	screen.width = 608;
+	screen.height = 160;
 	ctx = screen.getContext("2d");
 	document.body.appendChild(screen);
 	screen.style.position = "absolute";
@@ -60,26 +64,41 @@ setTimeout(() => {
 	
 	FLand.data.fill(255);
 	
-	poss = [2, 4, 7, 9];
-	d = Array(14).fill(0).map(()=>Array(42).fill(false));
+	c = 0;
+	poss = [3, 0, 3, 2, 3, 3, 3, 4, 3, 5, 3, 6, 3, 7, 3, 8, 2, 9, 1, 9, 0, 8];
+	g=run_bf(`
+		+++.>.+>+++++++[-<<.>+.>]<<-.>+.<-.>.<-.>-.<
+		+++++.>+.>+++++++[-<<.>-.>]+++[-<<+.>.>]<<+>>++++[-<<.>+.>]<+>+++[-<<-.>.>]<<
+		+++++>----->+++[-<<.>.<.>+.<+>+>]<--->++[-<<.>.<.>-.<+>->]<<
+		+.>-.+>++++++[-<<.>+.>]<<
+		>>>++[-<<< ++>------>++++++[-<<.>+.>]<<+.>----.<+.>-.<+.>.<+>>+++++[-<<.>+.>] >]<<<
+		++.>-------.+>++++++[-<<.>+.>]<<
+		++++++.>-.+>+++[-<<-.>.>]<<->>++++[-<<.>-.>]<->+++[-<<+.>.>]<<+.>+.+>++++[-<<.->.>]
+	`);
+	d = Array(10).fill(0).map(()=>Array(38).fill(false));
 	for(var i = 0; i < poss.length; i+=2) {
-		d[poss[i+1]][poss[i]] = true;
+		//d[poss[i+1]][poss[i]] = true;
 	}
+	//while(!(a=g.next()).done) {console.log(a.value,b=g.next().value);d[b][a.value]=true}
 	
-	t = 0;
-	white = "255;".repeat(3).split(";").slice(0,-1).map(i=>+i);
+	t = 80;
 	
 	setInterval(() => {
 		t++;
 		for(var y = 0; y < screen.height; y++) {
 			for(var x = 0; x < screen.width; x++) {
-				colours = d[Math.floor(y/16)][Math.floor(x/16)] ? hue(t) : white;
-				for(var i = 0; i < 3; i++) {
-					FLand.data[(x * 4) + (y * screen.width * 4) + i] = colours[i];
+				if(d[Math.floor(y/16)][Math.floor(x/16)]) {
+					for(var i = 0; i < 3; i++) {
+						FLand.data[(x * 4) + (y * screen.width * 4) + i] = hue(t)[i];
+					}
 				}
 			}
 		}
 		
+		if(!(x=g.next()).done) {
+			y=g.next()
+			console.log(x.value, y.value); d[y.value][x.value] = true;
+		}
 		ctx.putImageData(FLand, 0, 0);
-	}, 1000/15);
+	}, 1000/30);
 }, 10);
