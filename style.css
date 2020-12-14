@@ -1,0 +1,9 @@
+@font-face {
+	font-family: FiraCode;
+	src: url(FiraCode.ttf);
+}
+
+p {
+	font-family: FiraCode;
+	font-size: 16px;
+}
